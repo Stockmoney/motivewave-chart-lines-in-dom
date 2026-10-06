@@ -31,13 +31,13 @@ With *Ticks/Row* above 1 the note is shown on the DOM row that contains the pric
 
 1. Download `DomLines.jar` from the [latest release](../../releases/latest).
 2. Put it into the **`MotiveWave Extensions`** folder in your user home folder (MotiveWave scans it automatically; on macOS: `~/MotiveWave Extensions` — create the folder if it does not exist).
-3. Restart MotiveWave (or wait ~10 seconds: it also picks up a new jar by itself). The indicator appears under **Study → General → Chart Lines in DOM**.
+3. Restart MotiveWave (or wait ~10 seconds: it also picks up a new jar by itself). The indicator appears under **Study → Alex Indicators → Chart Lines in DOM**.
 
 > Tested on **macOS with MotiveWave 7.1.1** and CME futures (MNQ). The jar is plain Java and should work on Windows too, but that has not been tested.
 
 ## Set up (once)
 
-1. Open the chart whose lines you want, then **Study → General → Chart Lines in DOM → Add** (once per chart). Save the chart as a *Template* to get it on every new chart.
+1. Open the chart whose lines you want, then **Study → Alex Indicators → Chart Lines in DOM → Add** (once per chart). Save the chart as a *Template* to get it on every new chart.
 2. In the DOM header press **+** and tick **Notes**. The Notes column is **off by default** — this is the step people miss. Drag the **Notes** header next to **Price** (or widen the DOM) so the notes are close to the ladder.
 3. The DOM must be **linked to the chart** (same instrument, same link colour). A DOM that is not linked never shows the chart's notes.
 
@@ -45,7 +45,7 @@ That is all.
 
 ## Settings
 
-Study → *Chart Lines in DOM* → Properties:
+Click the **gear icon** next to *Chart Lines in DOM* in the chart legend for the three settings below (or Study → *Chart Lines in DOM* → Properties):
 
 | Setting | Default | Meaning |
 |---|---|---|
@@ -85,6 +85,8 @@ bash build.sh install    # also copies it into ~/MotiveWave Extensions (hot-load
 Needs a JDK 17+ and, from your own MotiveWave installation, `mwave_sdk.jar` and the `javafx.*.jar` files (neither is part of this repository). Override the locations with `MW_SDK`, `MW_EXT`, `JAVA_HOME`.
 
 ## Changelog
+
+**0.1.1** — the three settings are also behind the **gear icon** in the chart legend; the indicator now lives in the menu folder **Study → Alex Indicators** (was *General*).
 
 **0.1.0** — first release: horizontal chart lines → DOM notes (price, line colour), live follow on move/add/delete, settings, log, 21 tests.
 
