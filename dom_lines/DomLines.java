@@ -45,7 +45,7 @@ import dom_lines.sync.NoteSync;
 )
 public class DomLines extends Study {
 
-    static final String VERSION = "0.1.0";
+    static final String VERSION = "0.1.1";
 
     private static final String ENABLED = "enabled";
     private static final String SHOW_PRICE = "showPrice";
@@ -72,6 +72,7 @@ public class DomLines extends Study {
         g.addRow(new BooleanDescriptor(SHOW_PRICE, get("LBL_SHOW_PRICE"), true));
         g.addRow(new BooleanDescriptor(USE_LINE_COLOR, get("LBL_USE_LINE_COLOR"), true),
                 new ColorDescriptor(COLOR, get("LBL_COLOR"), new Color(90, 90, 90)));
+        sd.addQuickSettings(ENABLED, SHOW_PRICE, USE_LINE_COLOR, COLOR);       // gear icon in the chart legend
         sd.addDependency(new EnabledDependency(false, USE_LINE_COLOR, COLOR));    // the fixed colour is only used when the line colour is off
         createRD();
     }
