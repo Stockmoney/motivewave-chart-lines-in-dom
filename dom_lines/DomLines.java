@@ -45,7 +45,7 @@ import dom_lines.sync.NoteSync;
 )
 public class DomLines extends Study {
 
-    static final String VERSION = "0.1.1";
+    static final String VERSION = "0.1.2";
 
     private static final String ENABLED = "enabled";
     private static final String SHOW_PRICE = "showPrice";
