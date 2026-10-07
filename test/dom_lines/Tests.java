@@ -138,6 +138,13 @@ public final class Tests {
         chart.items.remove(1);
         check("a removed line is gone on the next read", reader.read().size() == 2);
 
+        // a line put down with ONE click (the horizontal-line hotkey): both anchors at the same moment and price
+        chart.items.add(new Line(4000, 31413.0, 4000, 31413.0, Color.GREEN, chart));
+        var withOneClick = reader.read();
+        check("a one-click line (both anchors at one moment) is read", withOneClick.size() == 3
+                && withOneClick.stream().anyMatch(l -> Math.abs(l.price() - 31413.0) < 1e-9 && l.color().equals(Color.GREEN)));
+        check("a vertical line is still not a horizontal one", withOneClick.stream().noneMatch(l -> Math.abs(l.price() - 31000.0) < 1e-9));
+
         var empty = new l();
         check("a chart with no drawings yields none, not an error", unavailable(new ChartLines(new dc(new h(empty)))));
 
