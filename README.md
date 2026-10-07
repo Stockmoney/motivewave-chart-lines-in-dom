@@ -86,6 +86,8 @@ Needs a JDK 17+ and, from your own MotiveWave installation, `mwave_sdk.jar` and 
 
 ## Changelog
 
+**0.1.2** — fix: lines put down with one click (the horizontal-line hotkey) were not shown in the DOM; only lines stretched by mouse were. Now every horizontal line is mirrored.
+
 **0.1.1** — the three settings are also behind the **gear icon** in the chart legend; the indicator now lives in the menu folder **Study → Alex Indicators** (was *General*).
 
 **0.1.0** — first release: horizontal chart lines → DOM notes (price, line colour), live follow on move/add/delete, settings, log, 21 tests.
