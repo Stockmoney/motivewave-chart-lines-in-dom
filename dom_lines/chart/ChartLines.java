@@ -131,22 +131,23 @@ public final class ChartLines {
 
     /**
      * The price of a figure that is a horizontal line, NaN otherwise: it has at least two anchor
-     * points, all on one price, not all at the same moment. Anchors are looked for in the figure's own
-     * fields and in the anchor objects those point to (one more level), never in the chart it belongs to.
+     * points (two separate objects), all on one price. The two may also sit at the same moment: a line
+     * put down with one click (the horizontal-line hotkey) has identical start and end - only a figure
+     * whose anchors differ in PRICE is not horizontal (a vertical or sloped line). Anchors are looked for
+     * in the figure's own fields and in the anchor objects those point to (one more level), never in the
+     * chart it belongs to.
      */
     static double horizontalPrice(Object figure) {
         var coords = new IdentityHashMap<Coordinate, Boolean>();
         collect(figure, 0, coords, new IdentityHashMap<>());
         if (coords.size() < 2) return Double.NaN;
         double price = Double.NaN;
-        long firstTime = 0;
-        boolean timesDiffer = false, first = true;
+        boolean first = true;
         for (Coordinate c : coords.keySet()) {
-            if (first) { price = c.getValue(); firstTime = c.getTime(); first = false; continue; }
+            if (first) { price = c.getValue(); first = false; continue; }
             if (Math.abs(c.getValue() - price) > 1e-9) return Double.NaN;
-            if (c.getTime() != firstTime) timesDiffer = true;
         }
-        return timesDiffer && price > 0 ? price : Double.NaN;
+        return price > 0 ? price : Double.NaN;
     }
 
     private static void collect(Object o, int depth, Map<Coordinate, Boolean> out, Map<Object, Boolean> seen) {
