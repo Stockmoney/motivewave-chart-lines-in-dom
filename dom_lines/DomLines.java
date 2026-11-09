@@ -45,7 +45,7 @@ import dom_lines.sync.NoteSync;
 )
 public class DomLines extends Study {
 
-    static final String VERSION = "0.1.2";
+    static final String VERSION = "0.1.3";
 
     private static final String ENABLED = "enabled";
     private static final String SHOW_PRICE = "showPrice";
@@ -58,6 +58,8 @@ public class DomLines extends Study {
     private NoteSync<Object> sync;
     private Timer timer;
     private volatile boolean destroyed;
+    private volatile boolean superseded;     // a newer copy of the jar took over: this instance stays silent
+    private long recleanAt;                  // once, shortly after start: clean slate again (see start())
     private boolean started, failureLogged;
     private volatile long settingsStamp;     // bumped when settings change: the next pass rebuilds every note
     private long appliedStamp = -1;
@@ -112,10 +114,24 @@ public class DomLines extends Study {
         destroyed = false;
         sync = null;
         started = true;
+        // This copy of the jar takes over. The instance of an older copy (MotiveWave does not destroy() it when the jar is
+        // replaced) stops its timer at its next tick, but a note it wrote in that last moment would outlive it; so the
+        // first clean slate is made again two seconds after the start.
+        LoadedCopy.claim();
+        recleanAt = System.currentTimeMillis() + 2000;
         reader = new ChartLines(ctx);
         timer = new Timer("DomLines-sync", true);
         timer.schedule(new TimerTask() {
-            @Override public void run() { onUi(DomLines.this::pass); }
+            @Override public void run() {
+                if (!LoadedCopy.isCurrent()) {
+                    superseded = true;
+                    stop();
+                    // its notes are NOT removed: removeAllNotes() goes by the study id, which the new instance shares
+                    AuditLog.log("LIFECYCLE", "a newer copy of the indicator is loaded: this old instance stops (v" + VERSION + ")");
+                    return;
+                }
+                onUi(DomLines.this::pass);
+            }
         }, 500, PERIOD_MS);
         AuditLog.log("LIFECYCLE", "started v" + VERSION);
     }
@@ -137,12 +153,16 @@ public class DomLines extends Study {
 
     // ==================== one pass ====================
     private void pass() {
-        if (destroyed) return;
+        if (destroyed || superseded) return;
         try {
             DataContext dc = getDataContext();
             if (dc == null) return;
             Settings s = getSettings();
             Instrument instr = dc.getInstrument();
+            if (recleanAt > 0 && System.currentTimeMillis() >= recleanAt) {
+                recleanAt = 0;
+                sync = null;
+            }
             if (sync == null || appliedStamp != settingsStamp) {
                 // first pass, or settings changed: start from a clean slate (notes of an earlier instance too)
                 dc.removeAllNotes();

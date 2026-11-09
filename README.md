@@ -78,13 +78,15 @@ The DOM can show *notes*, and the SDK lets a study add them (`DataContext.addNot
 ## Build from source
 
 ```bash
-bash build.sh            # build + 21 tests -> build/DomLines.jar
+bash build.sh            # build + 27 tests -> build/DomLines.jar
 bash build.sh install    # also copies it into ~/MotiveWave Extensions (hot-loaded, no restart)
 ```
 
 Needs a JDK 17+ and, from your own MotiveWave installation, `mwave_sdk.jar` and the `javafx.*.jar` files (neither is part of this repository). Override the locations with `MW_SDK`, `MW_EXT`, `JAVA_HOME`.
 
 ## Changelog
+
+**0.1.3** — after an update of the jar, the replaced copy of the indicator stops by itself. MotiveWave does not tell the old copy that it was replaced, so it went on syncing notes until the platform was restarted, and a moved line could show up twice in the DOM. Two seconds after it starts, the new copy also rebuilds its notes once more, so nothing the old copy wrote in its last moment stays behind.
 
 **0.1.2** — fix: lines put down with one click (the horizontal-line hotkey) were not shown in the DOM; only lines stretched by mouse were. Now every horizontal line is mirrored.
 

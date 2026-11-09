@@ -21,6 +21,7 @@ public final class Tests {
     public static void main(String[] args) throws Exception {
         sync();
         reading();
+        loadedCopy();
         System.out.println("tests: " + passed + " passed, " + failed + " failed");
         if (failed > 0) System.exit(1);
     }
@@ -158,6 +159,23 @@ public final class Tests {
             return false;
         } catch (ChartLines.Unavailable e) {
             return true;
+        }
+    }
+
+    /** The copy that starts last is current; an older copy (another jar's class) sees it and stops (9 Nov 2026). */
+    private static void loadedCopy() {
+        String before = System.getProperty(LoadedCopy.KEY);
+        try {
+            System.clearProperty(LoadedCopy.KEY);
+            check("loaded copy: nothing claimed yet -> current", LoadedCopy.isCurrent());
+            LoadedCopy.claim();
+            check("loaded copy: after claim -> current", LoadedCopy.isCurrent());
+            System.setProperty(LoadedCopy.KEY, "a-newer-jar");
+            check("loaded copy: a newer jar claimed -> not current", !LoadedCopy.isCurrent());
+            LoadedCopy.claim();
+            check("loaded copy: claimed back -> current", LoadedCopy.isCurrent());
+        } finally {
+            if (before == null) System.clearProperty(LoadedCopy.KEY); else System.setProperty(LoadedCopy.KEY, before);
         }
     }
 
